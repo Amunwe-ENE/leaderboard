@@ -18,8 +18,10 @@ class App  extends Component{
     super(props);
     this.handleSort = this.handleSort.bind(this);
   }
+
   
  getleaderboardData() {
+
     axios.get('/leaderboard')
     .then(({ data }) => {
      this.setState({scores:data})
