@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
+import {Form} from 'react-bootstrap';
 
 //import Image from 'react-bootstrap/lib/Image';
 //import Data from '../src/data.json';
 
 class App  extends Component{
   state = {
-        scores: []
+        scores: [],
+        order: 1,
+  }
+  constructor(props) {
+    super(props);
+    this.handleSort = this.handleSort.bind(this);
   }
   
  getleaderboardData() {
@@ -26,32 +32,60 @@ class App  extends Component{
     this.getleaderboardData();
 
   }
+  handleSort(e) {
+    e.preventDefault();
+    if(this.state.order === 1){
+      this.setState({order : 2});
+    this.state.scores.sort((a, b) => parseFloat(a.points) - parseFloat(b.points))
+    console.log("Hii")
+  }else{
+    this.setState({order : 1});
+    this.state.scores.sort((a, b) => parseFloat(b.points) - parseFloat(a.points))
+    console.log("Heey")
+  }
+  }
   render(){
     const{scores} = this.state;
+    
     const rows = [];
+    // const first = {backgroundColor: 'green'};
+    // const second = {backgroundColor: 'lightgreen'};
+    // const third = {backgroundColor: 'yellow'};
     scores.map((row, index)=> {
-    rows.push(<tr key={row.slackname}>
+    rows.push(<tr style={{
+      backgroundColor: index === 0 ? 'limegreen' :index === 1 ?'#00FF00':index === 2 ? '#ADFF2F': 'none'
+    }}>
         <td>{index + 1}</td>
-        <td><a href={'../src/data.json${row.slackname}'}>
-          <image src = {row.img} className="imageheight" circle/>{row.slackname}
-          </a></td>
+        <td>
+         {row.slackname}
+        </td>
         <td>{row.points}</td>
       </tr>)
+      return row
     })
     return(
       <div className='App'>
-        <Table stripped condensed hover bordered className="coloBlack"> 
-     <thead>
-       <tr>
-         <th>#</th>
-         <th>Slack Name</th>
-         <th>Points</th>
-       </tr>
-     </thead>
-     <tbody>
-       {rows}
-     </tbody>
-        </Table>
+        <div className='container'>
+          <h1>HNGi7 LeaderBoard</h1>
+          <Form>
+          <Form.Group controlId="formBasicCheckbox">
+            <Form.Check type="checkbox" label="Sort By Points"
+            onChange= {this.handleSort}
+            />
+          </Form.Group></Form>
+          <Table  stripped condensed hover bordered className="coloBlack"> 
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Slack Name</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows}
+            </tbody>
+          </Table>
+        </div>
       </div>
     )
   }
